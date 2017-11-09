@@ -27,6 +27,16 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.methods.comparePassword = function(password) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, this.password, function(err, isMatch) => {
+      if (err) reject(err);
+      if (!isMatch) reject('Wrong Password');
+      resolve(isMatch);
+    })
+  });
+};
+
 userSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('User', userSchema);

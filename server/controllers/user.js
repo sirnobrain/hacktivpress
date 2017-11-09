@@ -16,21 +16,33 @@ class User {
     })
     .then(isMatch => {
       const jwtoken = genToken(signinUser);
-      const resp = genResp(200, 'signed in', { jwtoken }, null);
+      const resp = genResp(200, 'logged in', { jwtoken }, null);
       res.status(resp.status).send(resp);
     })
     .catch(err => {
-      if (err === 'Wrong Password') {
-        const resp = genResp(422, 'signin failed, wrong password', null, err);
+      if (err === 'Wrong Password' || err === 'User Not Found') {
+        const resp = genResp(422, 'login failed', null, err);
         res.status(resp.status).send(resp);
       } else {
-        const resp = genResp(500, 'signin failed', null, err);
+        const resp = genResp(500, 'login failed', null, err);
         res.status(resp.status).send(resp);
       }
     });
   }
 
-  static register(req, res) {}
+  static register(req, res) {
+    models.User.create({username: req.body.username, password: req.body.password})
+    .then(createdUser => {
+      console.log('C', createdUser)
+      const jwtoken = genToken(createdUser);    
+      const resp = genResp(200, 'registered', { user: createdUser, jwtoken: jwtoken }, null);
+      res.status(resp.status).send(resp);
+    })
+    .catch(err => {
+      const resp = genResp(500, 'register failed', null, err);
+      res.status(resp.status).send(resp);
+    });
+  }
 }
 
 module.exports = User;

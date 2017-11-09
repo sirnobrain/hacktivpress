@@ -37,8 +37,8 @@ List of `articles` endpoints:
 |---------------------------|---------|-----------------------------------------------|
 | `/articles`               | GET     | get all articles                              |
 | `/articles/:id`           | GET     | get a single article                          |
-| `/articles/:category`     | GET     | get all articles in a certain category        |
-| `/articles/:author`       | GET     | get all articles wrote by a certain author    |
+| `/articles/category/:category`     | GET     | get all articles in a certain category        |
+| `/articles/author/:author`       | GET     | get all articles wrote by a certain author    |
 | `/articles`               | POST    | create an article                             |
 | `/articles/:id`           | PUT     | update an article                             |
 | `/articles/:id`           | DELETE  | delete an article                             |

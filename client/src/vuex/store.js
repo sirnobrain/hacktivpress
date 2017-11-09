@@ -14,7 +14,8 @@ let store = new Vuex.Store({
       username: null,
       jwtoken: null,
       isLoggedIn: false
-    }
+    },
+    articles: []
   },
   mutations: {
     setLogin (state, jwtoken) {
@@ -23,7 +24,7 @@ let store = new Vuex.Store({
       state.user._id = decoded._id
       state.user.username = decoded.username
       state.user.jwtoken = jwtoken
-      state.isLoggedIn = true
+      state.user.isLoggedIn = true
 
       localStorage.setItem('jwtoken::hacktivpress', jwtoken)
     },
@@ -31,9 +32,12 @@ let store = new Vuex.Store({
       state.user._id = null
       state.user.username = null
       state.user.jwtoken = null
-      state.isLoggedIn = false
+      state.user.isLoggedIn = false
 
       localStorage.removeItem('jwtoken::hacktivpress')
+    },
+    addArticleToStore (state, article) {
+      state.articles.unshift(article)
     }
   },
   actions: {
@@ -48,6 +52,7 @@ let store = new Vuex.Store({
         http.post('/login', user)
         .then(response => {
           context.commit('setLogin', response.data.payload.jwtoken)
+          resolve()
         })
         .catch(err => {
           reject(err)
@@ -59,6 +64,21 @@ let store = new Vuex.Store({
         http.post('/register', user)
         .then(response => {
           context.commit('setLogin', response.data.payload.jwtoken)
+          resolve()
+        })
+        .catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getAllArticles (context) {
+      return new Promise((resolve, reject) => {
+        http.get('/articles')
+        .then(response => {
+          const articles = response.data.payload.articles
+          articles.forEach(article => {
+            context.commit('addArticleToStore', article)
+          })
         })
         .catch(err => {
           reject(err)

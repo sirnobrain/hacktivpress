@@ -20,5 +20,6 @@ new Vue({
   components: { App },
   created () {
     this.$store.dispatch('checkLogin', localStorage.getItem('jwtoken::hacktivpress'))
+    this.$store.dispatch('getAllArticles')
   }
 })
